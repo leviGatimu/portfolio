@@ -1,26 +1,190 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+   Design tokens — every color on the site flows through these.
+   Light = ink on warm paper, acid yellow as a highlighter stroke.
+   Dark  = film black, acid yellow glows.
+   Rule: --accent is a FILL (blocks, underlines, selection) carrying
+   --on-accent text. Anything WRITTEN in the accent hue uses --accent-ink.
+--------------------------------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #f4f2ec;
+  --surface: #ece9e1;
+  --surface-2: #e3dfd4;
+  --fg: #101010;
+  --muted: #6b6862;
+  --border: rgba(16, 16, 16, 0.14);
+  --accent: #dfff00;
+  --accent-ink: #55651a;
+  --on-accent: #101010;
+  --grain-opacity: 0.035;
+  --grain-blend: multiply;
+}
+
+.dark {
+  --bg: #060606;
+  --surface: #101010;
+  --surface-2: #181818;
+  --fg: #f3f3f3;
+  --muted: #8a8a8a;
+  --border: rgba(243, 243, 243, 0.14);
+  --accent: #dfff00;
+  --accent-ink: #dfff00;
+  --on-accent: #060606;
+  --grain-opacity: 0.05;
+  --grain-blend: normal;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-on-accent: var(--on-accent);
+  --font-display: var(--font-anton);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-space-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ---------------------------------------------------------------------------
+   Base
+--------------------------------------------------------------------------- */
+html {
+  scroll-behavior: auto; /* Lenis owns scrolling */
+}
+
+html,
+body {
+  overflow-x: clip; /* not hidden — preserves position: sticky */
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 3px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--surface-2);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Custom cursor replaces the native one — fine pointers only */
+@media (hover: hover) and (pointer: fine) {
+  body[data-custom-cursor] *,
+  body[data-custom-cursor] {
+    cursor: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Display type helpers
+--------------------------------------------------------------------------- */
+.font-display {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+}
+
+.text-outline {
+  /* A full 1px renders unevenly on fractional display scaling such as 125%. */
+  -webkit-text-stroke: 1.5px var(--fg);
+  color: transparent;
+  text-rendering: geometricPrecision;
+}
+
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ---------------------------------------------------------------------------
+   Theme transition — View Transitions circular reveal
+   The new theme wipes over the old one (no default cross-fade).
+--------------------------------------------------------------------------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  z-index: 1;
+}
+
+/* Hide the custom cursor while a theme transition snapshot is live */
+html[data-vt] .custom-cursor {
+  opacity: 0 !important;
+}
+
+/* Fallback for browsers without View Transitions: one-shot color fade */
+html.theme-fade,
+html.theme-fade * {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    fill 0.3s ease,
+    stroke 0.3s ease !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Preloader flash guard — decided pre-paint by an inline script.
+   When html[data-booted] is set (repeat visit), the overlay never paints.
+--------------------------------------------------------------------------- */
+html[data-booted] .preloader-overlay {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Accessibility
+--------------------------------------------------------------------------- */
+.skip-link {
+  position: fixed;
+  top: -100%;
+  left: 1rem;
+  z-index: 10001;
+  padding: 0.75rem 1.25rem;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+.skip-link:focus-visible {
+  top: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
 }
