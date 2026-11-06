@@ -9,7 +9,7 @@ interface MaskRevealProps {
   text: string;
   by?: "char" | "word";
   className?: string;
-  /** Controlled mode: animate when this flips true (e.g. after the preloader).
+  /** Controlled mode: animate when this is true (e.g. on page load).
    *  Omit to animate on scroll into view. */
   show?: boolean;
   baseDelay?: number;

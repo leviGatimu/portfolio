@@ -5,7 +5,6 @@ import { motion, useReducedMotion } from "motion/react";
 import { EASE } from "@/lib/easing";
 import { site } from "@/data/site";
 import { usePortraitFloating } from "@/lib/hooks/usePortraitTransition";
-import { usePreloaderDone } from "@/lib/hooks/usePreloaderDone";
 import MagneticButton from "./MagneticButton";
 import PortraitGlitch from "./PortraitGlitch";
 
@@ -16,19 +15,17 @@ import PortraitGlitch from "./PortraitGlitch";
  */
 export default function PersistentPortrait() {
   const reduce = useReducedMotion();
-  const booted = usePreloaderDone();
   const floating = usePortraitFloating();
   const lenis = useLenis();
 
   if (reduce) return null;
 
-  const visible = booted && floating;
 
   return (
     <motion.div
       className="fixed bottom-6 right-6 z-[9975] md:bottom-8 md:right-8"
-      style={{ pointerEvents: visible ? "auto" : "none" }}
-      animate={{ opacity: visible ? 1 : 0, scale: visible ? 1 : 0.6, y: visible ? 0 : 12 }}
+      style={{ pointerEvents: floating ? "auto" : "none" }}
+      animate={{ opacity: floating ? 1 : 0, scale: floating ? 1 : 0.6, y: floating ? 0 : 12 }}
       transition={{ duration: 0.45, ease: EASE }}
     >
       <MagneticButton strength={0.3} className="size-14 md:size-16">

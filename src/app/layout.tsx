@@ -6,7 +6,6 @@ import GrainOverlay from "@/components/ui/GrainOverlay";
 import CustomCursor from "@/components/ui/CustomCursor";
 import PersistentPortrait from "@/components/ui/PersistentPortrait";
 import Nav from "@/components/layout/Nav";
-import Preloader from "@/components/layout/Preloader";
 
 const anton = Anton({
   variable: "--font-anton",
@@ -31,9 +30,6 @@ export const metadata: Metadata = {
     "Software developer in Kigali, Rwanda. Designing and building web applications, platforms and dashboards that ship.",
 };
 
-/** Runs before paint: repeat visits skip the preloader without a flash. */
-const bootScript = `try{if(sessionStorage.getItem("lg-booted"))document.documentElement.setAttribute("data-booted","")}catch(e){}`;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -46,7 +42,6 @@ export default function RootLayout({
       className={`${anton.variable} ${inter.variable} ${spaceMono.variable} antialiased`}
     >
       <body data-custom-cursor>
-        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
         <a href="#main" className="skip-link">
           Skip to content
         </a>
@@ -55,7 +50,6 @@ export default function RootLayout({
           {children}
           <CustomCursor />
           <GrainOverlay />
-          <Preloader />
           <PersistentPortrait />
         </Providers>
       </body>

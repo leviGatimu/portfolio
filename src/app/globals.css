@@ -158,14 +158,6 @@ html.theme-fade * {
 }
 
 /* ---------------------------------------------------------------------------
-   Preloader flash guard — decided pre-paint by an inline script.
-   When html[data-booted] is set (repeat visit), the overlay never paints.
---------------------------------------------------------------------------- */
-html[data-booted] .preloader-overlay {
-  display: none;
-}
-
-/* ---------------------------------------------------------------------------
    Accessibility
 --------------------------------------------------------------------------- */
 .skip-link {

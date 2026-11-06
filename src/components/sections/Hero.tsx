@@ -11,7 +11,6 @@ import {
 } from "motion/react";
 import { site } from "@/data/site";
 import { EASE } from "@/lib/easing";
-import { usePreloaderDone } from "@/lib/hooks/usePreloaderDone";
 import MaskReveal from "@/components/ui/MaskReveal";
 import ScrambleText from "@/components/ui/ScrambleText";
 import LiveClock from "@/components/ui/LiveClock";
@@ -19,7 +18,6 @@ import PortraitGlitch from "@/components/ui/PortraitGlitch";
 
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
-  const booted = usePreloaderDone();
   const reduce = useReducedMotion();
 
   // Scroll-away: the whole composition lifts and fades as one unit
@@ -80,7 +78,7 @@ export default function Hero() {
             opacity: stageOpacity,
           }}
           initial={{ scale: 0.85 }}
-          animate={booted ? { scale: 1 } : {}}
+          animate={{ scale: 1 }}
           transition={{ duration: 1.2, ease: EASE }}
         />
       </div>
@@ -99,7 +97,7 @@ export default function Hero() {
               >
                 <MaskReveal
                   text={site.firstName}
-                  show={booted}
+                  show
                   baseDelay={0.1}
                   className="font-display text-[clamp(5rem,26vw,16rem)] leading-[0.85] text-fg"
                 />
@@ -110,7 +108,7 @@ export default function Hero() {
               >
                 <MaskReveal
                   text={site.lastName}
-                  show={booted}
+                  show
                   baseDelay={0.3}
                   className="font-display text-outline text-[clamp(5rem,26vw,16rem)] leading-[0.85]"
                 />
@@ -128,8 +126,8 @@ export default function Hero() {
               tiltY.set(0);
             }}
             initial={{ opacity: 0, y: 20 }}
-            animate={booted ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.6, duration: 0.8, ease: EASE }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.8, ease: EASE }}
           >
             {/* Grows from the top so the head clears the nav; the hero clips the rest */}
             <div className="absolute inset-0 origin-top scale-110 md:scale-[1.2]">
@@ -143,8 +141,8 @@ export default function Hero() {
       <motion.div
         style={{ opacity: metaOpacity }}
         initial={{ opacity: 0, y: 12 }}
-        animate={booted ? { opacity: 1, y: 0 } : {}}
-        transition={{ delay: 1.4, duration: 0.6, ease: EASE }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.45, duration: 0.6, ease: EASE }}
         className="relative z-20 mt-8 flex flex-col items-center text-center md:absolute md:bottom-8 md:left-6 md:mt-0 md:items-start md:text-left lg:left-10"
       >
         <span className="relative inline-block">
@@ -152,21 +150,21 @@ export default function Hero() {
             className="absolute inset-0 bg-accent"
             style={{ originX: 0 }}
             initial={{ scaleX: 0 }}
-            animate={booted ? { scaleX: 1 } : { scaleX: 0 }}
-            transition={{ delay: 0.9, duration: 0.6, ease: EASE }}
+            animate={{ scaleX: 1 }}
+            transition={{ delay: 0.35, duration: 0.6, ease: EASE }}
           />
           <motion.span
             className="mono-label relative block px-3 py-2 text-on-accent"
             initial={{ opacity: 0 }}
-            animate={booted ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ delay: 1.15, duration: 0.3 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.3 }}
           >
             {site.role.toUpperCase()}
           </motion.span>
         </span>
 
         <p className="mono-label mt-3 text-muted">
-          {booted && <ScrambleText text="KIGALI, RWANDA — KENYAN / RWANDAN" delay={200} />}
+          <ScrambleText text="KIGALI, RWANDA — KENYAN / RWANDAN" delay={200} />
         </p>
 
         <div className="mono-label mt-3 flex gap-4 text-muted">
@@ -182,8 +180,8 @@ export default function Hero() {
       <motion.div
         style={{ opacity: metaOpacity }}
         initial={{ opacity: 0, y: 12 }}
-        animate={booted ? { opacity: 1, y: 0 } : {}}
-        transition={{ delay: 1.4, duration: 0.6, ease: EASE }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.45, duration: 0.6, ease: EASE }}
         className="relative z-20 mt-6 flex flex-col items-center text-center md:absolute md:bottom-8 md:right-6 md:mt-0 md:items-end md:text-right lg:right-10"
       >
         <p className="mono-label flex items-center gap-2 text-fg">
