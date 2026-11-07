@@ -10,6 +10,19 @@ const SCREENSHOT_ASPECT = 1.6;
  */
 export const projectWall: PictureRailItem[] = [
   {
+    id: "malhot",
+    title: "Malhot Technologies",
+    artist: "Built with the Malhot team",
+    description:
+      "The website of Malhot Technologies, the Kigali software company I own and serve as COO. It presents our services, projects and how we work.",
+    image: "/projects/malhot.jpg",
+    aspect: SCREENSHOT_ASPECT,
+    frame: "white",
+    drop: 0.06,
+    tech: [tech.nextjs, tech.react, tech.tailwind],
+    href: "https://malhot.vercel.app",
+  },
+  {
     id: "tembera",
     title: "Tembera",
     description:

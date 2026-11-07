@@ -5,13 +5,6 @@ import MaskReveal from "@/components/ui/MaskReveal";
 
 const HEADING = "Always building";
 
-const pushedFormat = new Intl.DateTimeFormat("en", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-  timeZone: "UTC",
-});
-
 export default function GitHubActivity() {
   return (
     <section id="activity" className="px-6 pb-24 md:px-10 md:pb-32">
@@ -43,7 +36,7 @@ export default function GitHubActivity() {
 }
 
 async function Activity() {
-  const { contributions, publicRepos, latest } = await getGitHubActivity();
+  const { contributions, publicRepos } = await getGitHubActivity();
 
   const stats = [
     contributions && { value: contributions.total, label: "Contributions this year" },
@@ -52,7 +45,7 @@ async function Activity() {
     publicRepos !== null && { value: publicRepos, label: "Public repositories" },
   ].filter((stat) => !!stat);
 
-  if (!stats.length && !latest.length) {
+  if (!stats.length) {
     return (
       <p className="mt-8 text-fg">
         GitHub isn&apos;t responding right now, so see everything on{" "}
@@ -82,38 +75,6 @@ async function Activity() {
       {contributions && (
         <div className="mt-10 md:mt-14">
           <ContributionGraph days={contributions.days} total={contributions.total} />
-        </div>
-      )}
-
-      {latest.length > 0 && (
-        <div className="mt-14 md:mt-20">
-          <h3 className="mono-label mb-6 text-muted">Pushed most recently</h3>
-          <ul>
-            {latest.map((repo) => (
-              <li key={repo.name} className="border-t border-border last:border-b">
-                <a
-                  href={repo.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group grid gap-2 py-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_16rem] md:items-baseline md:gap-8 md:py-6"
-                >
-                  <span className="min-w-0">
-                    {/* Highlighter sweep on hover, the same stroke as the rest of the site */}
-                    <span className="font-display bg-[linear-gradient(var(--accent),var(--accent))] bg-no-repeat text-[clamp(1.5rem,2.6vw,2.25rem)] text-fg transition-[background-size] duration-500 [background-position:0_82%] [background-size:0%_32%] group-hover:[background-size:100%_32%]">
-                      {repo.name}
-                    </span>
-                  </span>
-                  <span className="line-clamp-2 min-w-0 text-[15px] leading-snug text-muted">
-                    {repo.description ?? repo.language ?? "View on GitHub"}
-                  </span>
-                  <span className="mono-label whitespace-nowrap text-fg md:text-right">
-                    {repo.language && <span className="text-muted">{repo.language} · </span>}
-                    {pushedFormat.format(new Date(repo.pushedAt))} ↗
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
         </div>
       )}
     </>

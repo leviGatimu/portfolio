@@ -40,4 +40,13 @@ export const testimonials: Testimonial[] = [
     image: "/people/eric.jpg",
     approved: true,
   },
+  {
+    id: "alpha",
+    name: "Alpha Mugisha",
+    designation: "Collaborator on Tembera Rwanda and RwaSport",
+    quote:
+      "I've had the opportunity to work with Levi on projects like Tembera Rwanda and RwaSport, and I can confidently say he's a hardworking, dedicated, and passionate developer. He's always willing to learn, take on challenges, and turn ideas into something meaningful. Working alongside him has shown me his commitment to delivering quality work, his problem-solving mindset, and his ability to collaborate effectively. He's definitely someone I'd be happy to work with on future projects.",
+    image: "/people/alpha.jpg",
+    approved: true,
+  },
 ];

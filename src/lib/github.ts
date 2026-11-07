@@ -1,7 +1,6 @@
 const USER = "leviGatimu";
 const REVALIDATE_SECONDS = 3600;
 const TIMEOUT_MS = 8000;
-const LATEST_REPOS = 4;
 
 export const GITHUB_PROFILE = `https://github.com/${USER}`;
 
@@ -12,19 +11,10 @@ export interface ContributionDay {
   level: number;
 }
 
-export interface LatestRepo {
-  name: string;
-  description: string | null;
-  language: string | null;
-  pushedAt: string;
-  url: string;
-}
-
 export interface GitHubActivity {
   /** Null if GitHub's contribution page couldn't be read. */
   contributions: { total: number; days: ContributionDay[]; currentStreak: number; longestStreak: number } | null;
   publicRepos: number | null;
-  latest: LatestRepo[];
 }
 
 function request(url: string, headers: HeadersInit = {}) {
@@ -97,42 +87,14 @@ async function fetchPublicRepos() {
   return user.public_repos;
 }
 
-async function fetchLatest(): Promise<LatestRepo[]> {
-  const response = await request(
-    `https://api.github.com/users/${USER}/repos?sort=pushed&per_page=12`,
-    apiHeaders(),
-  );
-  if (!response.ok) throw new Error(`repos: ${response.status}`);
-  const repos = (await response.json()) as {
-    name: string;
-    description: string | null;
-    language: string | null;
-    pushed_at: string;
-    html_url: string;
-    fork: boolean;
-  }[];
-  return repos
-    .filter((repo) => !repo.fork && repo.name.toLowerCase() !== USER.toLowerCase())
-    .slice(0, LATEST_REPOS)
-    .map((repo) => ({
-      name: repo.name,
-      description: repo.description,
-      language: repo.language,
-      pushedAt: repo.pushed_at,
-      url: repo.html_url,
-    }));
-}
-
 /** Each source fails on its own, so one outage only removes its own part of the section. */
 export async function getGitHubActivity(): Promise<GitHubActivity> {
-  const [contributions, publicRepos, latest] = await Promise.allSettled([
+  const [contributions, publicRepos] = await Promise.allSettled([
     fetchContributions(),
     fetchPublicRepos(),
-    fetchLatest(),
   ]);
   return {
     contributions: contributions.status === "fulfilled" ? contributions.value : null,
     publicRepos: publicRepos.status === "fulfilled" ? publicRepos.value : null,
-    latest: latest.status === "fulfilled" ? latest.value : [],
   };
 }

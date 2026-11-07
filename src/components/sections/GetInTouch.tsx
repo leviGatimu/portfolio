@@ -98,6 +98,19 @@ export default function GetInTouch() {
           {site.phone}
         </a>
       </div>
+
+      <p className="mt-10 max-w-[46ch] border-t border-border pt-6 text-sm leading-relaxed text-muted">
+        Need a whole team? I own{" "}
+        <a
+          href="https://malhot.vercel.app"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-fg underline decoration-accent-ink underline-offset-4 transition-colors hover:text-accent-ink"
+        >
+          Malhot Technologies
+        </a>
+        , a software company in Kigali, and I&apos;m its COO.
+      </p>
     </section>
   );
 }

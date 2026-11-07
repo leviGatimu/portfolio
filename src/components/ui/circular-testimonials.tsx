@@ -18,7 +18,9 @@ export interface CircularTestimonial {
   image: string;
 }
 
-const AUTOPLAY_MS = 6000;
+const MIN_DWELL_MS = 6000;
+/** Long quotes stay up longer, so autoplay never moves on mid-sentence. */
+const DWELL_MS_PER_WORD = 250;
 const MIN_WIDTH = 1024;
 const MAX_WIDTH = 1456;
 const MIN_GAP = 60;
@@ -54,9 +56,10 @@ export default function CircularTestimonials({ items }: { items: CircularTestimo
   // Only advances on screen, and stops for good once someone takes control.
   useEffect(() => {
     if (!autoplay || !inView || reduce || count < 2) return;
-    const timer = window.setInterval(() => setActive((index) => (index + 1) % count), AUTOPLAY_MS);
-    return () => window.clearInterval(timer);
-  }, [autoplay, inView, reduce, count]);
+    const dwell = Math.max(MIN_DWELL_MS, current.quote.split(" ").length * DWELL_MS_PER_WORD);
+    const timer = window.setTimeout(() => setActive((index) => (index + 1) % count), dwell);
+    return () => window.clearTimeout(timer);
+  }, [autoplay, inView, reduce, count, current]);
 
   const go = (step: 1 | -1) => {
     setAutoplay(false);
@@ -110,32 +113,26 @@ export default function CircularTestimonials({ items }: { items: CircularTestimo
       </div>
 
       <div className="flex min-w-0 flex-col justify-between gap-10 md:pt-20">
-        <div aria-live={autoplay ? "off" : "polite"} className="min-h-72 md:min-h-80">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={current.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              <h3 className="font-display text-[clamp(2rem,3.4vw,3.25rem)] text-fg">{current.name}</h3>
-              <p className="mono-label mt-3 text-muted">{current.designation}</p>
-              <blockquote className="mt-6 max-w-[46ch] text-[clamp(1.125rem,1.6vw,1.375rem)] leading-relaxed text-fg">
-                {current.quote.split(" ").map((word, index) => (
-                  <motion.span
-                    key={index}
-                    initial={{ filter: "blur(10px)", opacity: 0, y: 5 }}
-                    animate={{ filter: "blur(0px)", opacity: 1, y: 0 }}
-                    transition={{ duration: 0.22, ease: "easeInOut", delay: 0.025 * index }}
-                    className="inline-block"
-                  >
-                    {word}&nbsp;
-                  </motion.span>
-                ))}
-              </blockquote>
-            </motion.div>
-          </AnimatePresence>
+        <div className="grid">
+          {/* Invisible copies hold the tallest quote's height, so the page never jumps. */}
+          {items.map((item) => (
+            <div key={item.id} className="invisible [grid-area:1/1]">
+              <PersonText person={item} reveal={false} />
+            </div>
+          ))}
+          <div aria-live={autoplay ? "off" : "polite"} className="[grid-area:1/1]">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={current.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <PersonText person={current} reveal />
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
 
         {count > 1 && (
@@ -161,5 +158,27 @@ export default function CircularTestimonials({ items }: { items: CircularTestimo
         )}
       </div>
     </div>
+  );
+}
+
+function PersonText({ person, reveal }: { person: CircularTestimonial; reveal: boolean }) {
+  return (
+    <>
+      <h3 className="font-display text-[clamp(2rem,3.4vw,3.25rem)] text-fg">{person.name}</h3>
+      <p className="mono-label mt-3 text-muted">{person.designation}</p>
+      <blockquote className="mt-6 max-w-[46ch] text-[clamp(1.125rem,1.6vw,1.375rem)] leading-relaxed text-fg">
+        {person.quote.split(" ").map((word, index) => (
+          <motion.span
+            key={index}
+            initial={reveal ? { filter: "blur(10px)", opacity: 0, y: 5 } : false}
+            animate={{ filter: "blur(0px)", opacity: 1, y: 0 }}
+            transition={{ duration: 0.22, ease: "easeInOut", delay: 0.025 * index }}
+            className="inline-block"
+          >
+            {word}&nbsp;
+          </motion.span>
+        ))}
+      </blockquote>
+    </>
   );
 }
