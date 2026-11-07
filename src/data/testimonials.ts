@@ -20,7 +20,7 @@ export const testimonials: Testimonial[] = [
     quote:
       "Levi built the Zibrah Code website and took real care in getting the ideas behind the book across. He listened closely and delivered a site I'm proud to send people to.",
     image: "/people/ibrahim.jpg",
-    approved: false,
+    approved: true,
   },
   {
     id: "kenny",
@@ -29,7 +29,7 @@ export const testimonials: Testimonial[] = [
     quote:
       "Levi is the developer who keeps going until something actually works. He learns fast, shares what he finds, and always cares about the details users notice.",
     image: "/people/kenny-portrait.jpg",
-    approved: false,
+    approved: true,
   },
   {
     id: "eric",
@@ -38,6 +38,6 @@ export const testimonials: Testimonial[] = [
     quote:
       "Levi is the kind of student who doesn't stop at the assignment. Give him a problem and he comes back with something that works, along with a clear explanation of how he got there.",
     image: "/people/eric.jpg",
-    approved: false,
+    approved: true,
   },
 ];

@@ -64,6 +64,14 @@ export default function Footer() {
                 {site.email}
               </a>
             </p>
+            <p>
+              <a
+                href={`tel:${site.phone.replaceAll(" ", "")}`}
+                className="transition-colors hover:text-accent-ink"
+              >
+                {site.phone}
+              </a>
+            </p>
             <p>{site.availability}</p>
           </address>
         </div>

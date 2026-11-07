@@ -7,6 +7,7 @@ export const site = {
   role: "Software Developer",
   tagline: "I design and build web products that ship.",
   email: "getmorelev@gmail.com",
+  phone: "+250 798 978 545",
   github: "https://github.com/leviGatimu",
   location: "Kigali, Rwanda",
   coordinates: "1°57′S 30°04′E",

@@ -90,12 +90,14 @@ export default function GetInTouch() {
         )}
       </div>
 
-      <a
-        href={`mailto:${site.email}`}
-        className="mt-6 text-sm text-muted transition-colors hover:text-fg"
-      >
-        {site.email}
-      </a>
+      <div className="mt-6 flex flex-col items-center gap-2 text-sm text-muted sm:flex-row sm:gap-6">
+        <a href={`mailto:${site.email}`} className="transition-colors hover:text-fg">
+          {site.email}
+        </a>
+        <a href={`tel:${site.phone.replaceAll(" ", "")}`} className="transition-colors hover:text-fg">
+          {site.phone}
+        </a>
+      </div>
     </section>
   );
 }
