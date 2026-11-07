@@ -33,6 +33,8 @@ Page order: Hero, Intro ("Hi, I'm Levi"), Things I've Built, Tech Stack, Always 
 - Dev traps: the dev server sometimes doesn't generate new Tailwind classes after a component edit (a real content change to `globals.css` or a restart fixes it). A hash-only navigation isn't a reload, so hot-reload glitches can survive it.
 
 ## Recently Completed
+- Upgraded Next.js to 16.4.5 (audit clean) and changed Eric's quote from "student" to "developer" at his request.
+- Added Vercel Analytics to the root layout. Analytics must also be enabled in the Vercel project.
 - Removed the "Pushed most recently" repo list from Always Building; stats and graph stay.
 - Added Malhot Technologies: owner and COO line in Get In Touch and first frame on the rail (Next.js, React and Tailwind detected from the live site).
 - Added Alpha Mugisha as a fourth testimonial; testimonial height is now fixed and autoplay scales with quote length.

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Anton, Inter, Space_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Providers from "@/components/providers/Providers";
 import GrainOverlay from "@/components/ui/GrainOverlay";
@@ -52,6 +53,7 @@ export default function RootLayout({
           <GrainOverlay />
           <PersistentPortrait />
         </Providers>
+        <Analytics />
       </body>
     </html>
   );

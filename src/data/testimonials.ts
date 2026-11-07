@@ -36,7 +36,7 @@ export const testimonials: Testimonial[] = [
     name: "Eric Tuyishimire",
     designation: "Instructor",
     quote:
-      "Levi is the kind of student who doesn't stop at the assignment. Give him a problem and he comes back with something that works, along with a clear explanation of how he got there.",
+      "Levi is the kind of developer who doesn't stop at the assignment. Give him a problem and he comes back with something that works, along with a clear explanation of how he got there.",
     image: "/people/eric.jpg",
     approved: true,
   },
