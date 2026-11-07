@@ -49,4 +49,13 @@ export const testimonials: Testimonial[] = [
     image: "/people/alpha.jpg",
     approved: true,
   },
+  {
+    id: "kheilla",
+    name: "Kheilla Gwiza",
+    designation: "",
+    quote:
+      "Levi is one of the best developers I know. He is creative, innovative, and open-minded. He is never afraid to take risks for what he believes in and what he wants to create. He is a true change-maker in the tech industry. Trust me, he is someone to watch!",
+    image: "/people/kheilla.jpg",
+    approved: true,
+  },
 ];

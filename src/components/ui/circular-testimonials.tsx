@@ -165,7 +165,7 @@ function PersonText({ person, reveal }: { person: CircularTestimonial; reveal: b
   return (
     <>
       <h3 className="font-display text-[clamp(2rem,3.4vw,3.25rem)] text-fg">{person.name}</h3>
-      <p className="mono-label mt-3 text-muted">{person.designation}</p>
+      {person.designation && <p className="mono-label mt-3 text-muted">{person.designation}</p>}
       <blockquote className="mt-6 max-w-[46ch] text-[clamp(1.125rem,1.6vw,1.375rem)] leading-relaxed text-fg">
         {person.quote.split(" ").map((word, index) => (
           <motion.span
