@@ -65,7 +65,9 @@ export interface PictureRailGalleryProps extends React.ComponentProps<"section">
   action?: React.ReactNode;
   /** Lights the prints one by one until the visitor interacts. */
   autoplay?: boolean;
-  /** Milliseconds each print stays lit during autoplay. */
+  /** Keeps the rail moving one frame at a time, looping at the end. It pauses during use and resumes by itself. */
+  autoSlide?: boolean;
+  /** Milliseconds between autoplay or auto-slide steps. */
   interval?: number;
   /** Lit print. Pass a number or null to control it; leave it undefined to let the gallery manage it. */
   active?: number | null;
@@ -79,6 +81,8 @@ export interface PictureRailGalleryProps extends React.ComponentProps<"section">
 const DEFAULT_LABELS: PictureRailGalleryLabels = { front: "Front", back: "Back", close: "Close", open: "Open project", visit: "Visit site" };
 const PERSPECTIVE = 1200;
 const GAP = 0.2;
+const AUTO_SLIDE_MOVE_HOLD_MS = 2500;
+const AUTO_SLIDE_PRESS_HOLD_MS = 6000;
 const BREATH = 0.1;
 const MARGIN = 0.05;
 const EDGE = 24;
@@ -269,6 +273,7 @@ export function PictureRailGallery({
   caption,
   action,
   autoplay = false,
+  autoSlide = false,
   interval = 2600,
   active: activeProp,
   onActiveChange,
@@ -281,6 +286,9 @@ export function PictureRailGallery({
   const uid = React.useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const count = items.length;
   const controlled = activeProp !== undefined;
+  const rootRef = React.useRef(null as HTMLElement | null);
+  /** Auto-slide waits until this time, so it never moves the rail out from under someone using it. */
+  const holdUntil = React.useRef(0);
   const stageRef = React.useRef(null as HTMLDivElement | null);
   const scrollerRef = React.useRef(null as HTMLDivElement | null);
   const hangs = React.useRef([] as (HTMLDivElement | null)[]);
@@ -574,6 +582,34 @@ export function PictureRailGallery({
     return () => window.clearTimeout(timer);
   }, [playing, reduced, openIndex, count, interval, layout.width, choose, current]);
 
+  // A parked mouse doesn't hold the rail: only moving, pressing or keyboard focus does.
+  React.useEffect(() => {
+    const root = rootRef.current;
+    if (!autoSlide || !root || reduced || openIndex !== null || count < 2 || !layout.width) return;
+    let onScreen = false;
+    const observer = new IntersectionObserver(([entry]) => { onScreen = !!entry?.isIntersecting; }, { threshold: 0.25 });
+    if (scrollerRef.current) observer.observe(scrollerRef.current);
+    const timer = window.setInterval(() => {
+      const busy = pointer.current.id >= 0 || performance.now() < holdUntil.current || !!root.querySelector(":focus-visible");
+      if (!onScreen || document.hidden || busy) return;
+      const { layout: lay, shapes: list, count: n } = live.current;
+      if (lay.carousel) {
+        const next = ((live.current.active ?? live.current.carouselIndex) + 1) % n;
+        live.current.carouselIndex = next;
+        choose(next);
+        return;
+      }
+      const scroller = scrollerRef.current;
+      if (!scroller) return;
+      choose(null);
+      for (let i = 0; i < n; i++) { sim.current.tty[i] = 0; impulse(i, 1.5); }
+      kick();
+      if (scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 2) scroller.scrollTo({ left: 0, behavior: "smooth" });
+      else scroller.scrollBy({ left: ((list[0]?.w ?? 1) + GAP) * lay.unit, behavior: "smooth" });
+    }, interval);
+    return () => { window.clearInterval(timer); observer.disconnect(); };
+  }, [autoSlide, reduced, openIndex, count, layout.width, interval, choose, impulse, kick]);
+
   const open = React.useCallback((index: number) => {
     stop();
     choose(index);
@@ -765,6 +801,9 @@ export function PictureRailGallery({
   return (
     <section
       {...rest}
+      ref={rootRef}
+      onPointerMoveCapture={(event) => { if (event.pointerType === "mouse") holdUntil.current = performance.now() + AUTO_SLIDE_MOVE_HOLD_MS; }}
+      onPointerDownCapture={() => { holdUntil.current = performance.now() + AUTO_SLIDE_PRESS_HOLD_MS; }}
       data-slot="picture-rail-gallery"
       data-mode={layout.carousel ? "carousel" : "rail"}
       data-active={current ?? ""}

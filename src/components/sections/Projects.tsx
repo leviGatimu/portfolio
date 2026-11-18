@@ -20,6 +20,8 @@ export default function Projects() {
       </h2>
       <PictureRailGallery
         items={projectWall}
+        autoSlide
+        interval={3500}
         caption="Drag the rail to see more. Pick a project to open it."
         // Lenis would keep scrolling the page behind the open project.
         onOpenChange={(index) => (index === null ? lenis?.start() : lenis?.stop())}

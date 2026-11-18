@@ -18,9 +18,11 @@ export interface CircularTestimonial {
   image: string;
 }
 
-const MIN_DWELL_MS = 6000;
+const MIN_DWELL_MS = 5000;
 /** Long quotes stay up longer, so autoplay never moves on mid-sentence. */
-const DWELL_MS_PER_WORD = 250;
+const DWELL_MS_PER_WORD = 200;
+/** Extra time on a quote someone picked with the arrows, before autoplay carries on. */
+const MANUAL_HOLD_MS = 8000;
 const MIN_WIDTH = 1024;
 const MAX_WIDTH = 1456;
 const MIN_GAP = 60;
@@ -37,7 +39,7 @@ export default function CircularTestimonials({ items }: { items: CircularTestimo
   const imagesRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const [width, setWidth] = useState(MIN_WIDTH);
-  const [autoplay, setAutoplay] = useState(true);
+  const [manual, setManual] = useState(false);
   const reduce = useReducedMotion();
   const inView = useInView(rootRef, { amount: 0.3 });
   const count = items.length;
@@ -53,16 +55,22 @@ export default function CircularTestimonials({ items }: { items: CircularTestimo
     return () => observer.disconnect();
   }, []);
 
-  // Only advances on screen, and stops for good once someone takes control.
+  // Only advances on screen, and waits a little longer after someone uses the arrows.
   useEffect(() => {
-    if (!autoplay || !inView || reduce || count < 2) return;
+    if (!inView || reduce || count < 2) return;
     const dwell = Math.max(MIN_DWELL_MS, current.quote.split(" ").length * DWELL_MS_PER_WORD);
-    const timer = window.setTimeout(() => setActive((index) => (index + 1) % count), dwell);
+    const timer = window.setTimeout(
+      () => {
+        setManual(false);
+        setActive((index) => (index + 1) % count);
+      },
+      manual ? dwell + MANUAL_HOLD_MS : dwell,
+    );
     return () => window.clearTimeout(timer);
-  }, [autoplay, inView, reduce, count, current]);
+  }, [manual, inView, reduce, count, current]);
 
   const go = (step: 1 | -1) => {
-    setAutoplay(false);
+    setManual(true);
     setActive((index) => (index + step + count) % count);
   };
 
@@ -120,7 +128,7 @@ export default function CircularTestimonials({ items }: { items: CircularTestimo
               <PersonText person={item} reveal={false} />
             </div>
           ))}
-          <div aria-live={autoplay ? "off" : "polite"} className="[grid-area:1/1]">
+          <div aria-live={manual ? "polite" : "off"} className="[grid-area:1/1]">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={current.id}

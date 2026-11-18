@@ -16,9 +16,9 @@ export const testimonials: Testimonial[] = [
   {
     id: "ibrahim",
     name: "Ibrahim Ngugi Gatimu",
-    designation: "Client · Author of Zibrah Code",
+    designation: "Client · Zibrah Code, SoW!SE Africa",
     quote:
-      "Levi built the Zibrah Code website and took real care in getting the ideas behind the book across. He listened closely and delivered a site I'm proud to send people to.",
+      "From the moment I trusted Levi with my first website he proved himself exemplary. I couldn't resist giving him two more jobs. Levi is creative, diligent, timely and reliable in delivering high quality, professional results and benefits.",
     image: "/people/ibrahim.jpg",
     approved: true,
   },
@@ -55,7 +55,16 @@ export const testimonials: Testimonial[] = [
     designation: "",
     quote:
       "Levi is one of the best developers I know. He is creative, innovative, and open-minded. He is never afraid to take risks for what he believes in and what he wants to create. He is a true change-maker in the tech industry. Trust me, he is someone to watch!",
-    image: "/people/kheilla.jpg",
+    image: "/people/kheilla-portrait.jpg",
+    approved: true,
+  },
+  {
+    id: "deborah",
+    name: "Deborah",
+    designation: "",
+    quote:
+      "Levi is a hardworking, dedicated, and detail-oriented individual with excellent problem solving and teamwork skills he is determined to find solutions to challenges and ensures every task is completed with precision As a team member, he is inclusive and collaborative making sure everyone has a role to play and feels involved. His commitment to excellence, ability to work well with others, and passion for solving problems make him a valuable asset to any development team",
+    image: "/people/deborah.jpg",
     approved: true,
   },
 ];
